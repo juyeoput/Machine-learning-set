@@ -5,7 +5,6 @@
 
 # #### 데이터 로드
 
-# In[1]:
 
 
 import pandas as pd
@@ -19,7 +18,6 @@ card_df = pd.read_csv('./creditcard.csv')
 card_df.head(3)
 
 
-# In[2]:
 
 
 card_df.shape
@@ -27,7 +25,6 @@ card_df.shape
 
 # **원본 DataFrame은 유지하고 데이터 가공을 위한 DataFrame을 복사하여 반환**
 
-# In[3]:
 
 
 from sklearn.model_selection import train_test_split
@@ -41,7 +38,6 @@ def get_preprocessed_df(df=None):
 
 # **학습과 테스트 데이터 세트를 반환하는 함수 생성. 사전 데이터 처리가 끝난 뒤 해당 함수 호출**
 
-# In[4]:
 
 
 # 사전 데이터 가공 후 학습과 테스트 데이터 세트를 반환하는 함수.
@@ -63,13 +59,11 @@ def get_train_test_dataset(df=None):
 X_train, X_test, y_train, y_test = get_train_test_dataset(card_df)
 
 
-# In[5]:
 
 
 y_train.value_counts()/y_train.shape[0]*100
 
 
-# In[6]:
 
 
 print('학습 데이터 레이블 값 비율')
@@ -78,7 +72,6 @@ print('테스트 데이터 레이블 값 비율')
 print(y_test.value_counts()/y_test.shape[0] * 100)
 
 
-# In[7]:
 
 
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
@@ -99,7 +92,6 @@ def get_clf_eval(y_test, pred=None, pred_proba=None):
     F1: {3:.4f}, AUC:{4:.4f}'.format(accuracy, precision, recall, f1, roc_auc))
 
 
-# In[8]:
 
 
 from sklearn.linear_model import LogisticRegression
@@ -113,7 +105,6 @@ lr_pred_proba = lr_clf.predict_proba(X_test)[:, 1]
 get_clf_eval(y_test, lr_pred, lr_pred_proba)
 
 
-# In[ ]:
 
 
 
@@ -121,7 +112,6 @@ get_clf_eval(y_test, lr_pred, lr_pred_proba)
 
 # **앞으로 피처 엔지니어링을 수행할 때마다 모델을 학습/예측/평가하므로 이를 위한 함수 생성**
 
-# In[9]:
 
 
 # 인자로 사이킷런의 Estimator객체와, 학습/테스트 데이터 세트를 입력 받아서 학습/예측/평가 수행.
@@ -137,7 +127,6 @@ def get_model_train_eval(model, ftr_train=None, ftr_test=None, tgt_train=None, t
 # 
 # LightGBM 2.1.0 이상 버전에서 boost_from_average가 True가 Default가 됨. boost_from_average가 True일 경우 레이블 값이 극도로 불균형 분포를 이루는 경우 재현률 및 ROC-AUC 성능이 매우 저하됨. 레이블 값이 극도로 불균형할 경우 boost_from_average를 False로 설정하는 것이 유리
 
-# In[10]:
 
 
 from lightgbm import LGBMClassifier
@@ -151,7 +140,6 @@ get_model_train_eval(lgbm_clf, ftr_train=X_train, ftr_test=X_test, tgt_train=y_t
 
 # **중요 feature의 분포도 확인**
 
-# In[32]:
 
 
 import seaborn as sns
@@ -164,7 +152,6 @@ plt.show()
 
 # **데이터 사전 가공을 위한 별도의 함수에 StandardScaler를 이용하여 Amount 피처 변환**
 
-# In[ ]:
 
 
 from sklearn.preprocessing import StandardScaler
@@ -182,7 +169,6 @@ def get_preprocessed_df(df=None):
 
 # **StandardScaler 변환 후 로지스틱 회귀 및 LightGBM 학습/예측/평가**
 
-# In[ ]:
 
 
 # Amount를 정규분포 형태로 변환 후 로지스틱 회귀 및 LightGBM 수행. 
@@ -199,7 +185,6 @@ get_model_train_eval(lgbm_clf, ftr_train=X_train, ftr_test=X_test, tgt_train=y_t
 
 # **Amount를 로그 변환**
 
-# In[17]:
 
 
 def get_preprocessed_df(df=None):
@@ -211,13 +196,11 @@ def get_preprocessed_df(df=None):
     return df_copy
 
 
-# In[18]:
 
 
 print(np.log(1e-1000))
 
 
-# In[19]:
 
 
 # log1p 와 expm1 설명 
@@ -231,7 +214,6 @@ print(np.log(1e-1000 + 1))
 print(np.log1p(1e-1000))
 
 
-# In[20]:
 
 
 var_1 = np.log1p(100)
@@ -239,7 +221,6 @@ var_2 = np.expm1(var_1)
 print(var_1, var_2)
 
 
-# In[21]:
 
 
 X_train, X_test, y_train, y_test = get_train_test_dataset(card_df)
@@ -251,7 +232,6 @@ print('### LightGBM 예측 성능 ###')
 get_model_train_eval(lgbm_clf, ftr_train=X_train, ftr_test=X_test, tgt_train=y_train, tgt_test=y_test)
 
 
-# In[31]:
 
 
 import seaborn as sns
@@ -265,13 +245,11 @@ plt.show()
 
 # **각 피처들의 상관 관계를 시각화. 결정 레이블인 class 값과 가장 상관도가 높은 피처 추출**
 
-# In[ ]:
 
 
 card_df.corr()
 
 
-# In[ ]:
 
 
 import seaborn as sns
@@ -283,7 +261,6 @@ sns.heatmap(corr, annot=True, fmt='.1f',  cmap='RdBu')
 
 # **Dataframe에서 outlier에 해당하는 데이터를 필터링하기 위한 함수 생성. outlier 레코드의 index를 반환함**
 
-# In[61]:
 
 
 import numpy as np
@@ -304,13 +281,11 @@ def get_outlier(df=None, column=None, weight=1.5):
     
 
 
-# In[62]:
 
 
 np.percentile(card_df['V14'].values, 75)
 
 
-# In[63]:
 
 
 np.percentile(card_df['V14'].values, 100)
@@ -320,7 +295,6 @@ quantile_75 = np.percentile(card_df['V14'].values, 75)
 print(quantile_25, quantile_75)
 
 
-# In[64]:
 
 
 outlier_index = get_outlier(df=card_df, column='V14', weight=1.5)
@@ -329,7 +303,6 @@ print('이상치 데이터 인덱스:', outlier_index)
 
 # **로그 변환 후 V14 피처의 이상치 데이터를 삭제한 뒤 모델들을 재 학습/예측/평가**
 
-# In[65]:
 
 
 # get_processed_df( )를 로그 변환 후 V14 피처의 이상치 데이터를 삭제하는 로직으로 변경. 
@@ -350,7 +323,6 @@ print('### LightGBM 예측 성능 ###')
 get_model_train_eval(lgbm_clf, ftr_train=X_train, ftr_test=X_test, tgt_train=y_train, tgt_test=y_test)
 
 
-# In[ ]:
 
 
 
@@ -358,7 +330,6 @@ get_model_train_eval(lgbm_clf, ftr_train=X_train, ftr_test=X_test, tgt_train=y_t
 
 # ### SMOTE 오버 샘플링 적용 후 모델 학습/예측/평가
 
-# In[1]:
 
 
 import imblearn
@@ -366,13 +337,11 @@ import imblearn
 print(imblearn.__version__)
 
 
-# In[36]:
 
 
 y_train.value_counts()
 
 
-# In[35]:
 
 
 from imblearn.over_sampling import SMOTE
@@ -384,7 +353,6 @@ print('SMOTE 적용 후 학습용 피처/레이블 데이터 세트: ', X_train_
 print('SMOTE 적용 후 레이블 값 분포: \n', pd.Series(y_train_over).value_counts())
 
 
-# In[37]:
 
 
 lr_clf = LogisticRegression(max_iter=1000)
@@ -392,7 +360,6 @@ lr_clf = LogisticRegression(max_iter=1000)
 get_model_train_eval(lr_clf, ftr_train=X_train_over, ftr_test=X_test, tgt_train=y_train_over, tgt_test=y_test)
 
 
-# In[38]:
 
 
 import matplotlib.pyplot as plt
@@ -421,13 +388,11 @@ def precision_recall_curve_plot(y_test , pred_proba_c1):
     
 
 
-# In[39]:
 
 
 precision_recall_curve_plot( y_test, lr_clf.predict_proba(X_test)[:, 1] )
 
 
-# In[40]:
 
 
 lgbm_clf = LGBMClassifier(n_estimators=1000, num_leaves=64, n_jobs=-1, boost_from_average=False)
@@ -435,7 +400,6 @@ get_model_train_eval(lgbm_clf, ftr_train=X_train_over, ftr_test=X_test,
                   tgt_train=y_train_over, tgt_test=y_test)
 
 
-# In[ ]:
 
 
 

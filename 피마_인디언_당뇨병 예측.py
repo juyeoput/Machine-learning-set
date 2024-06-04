@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import numpy as np
@@ -30,7 +29,6 @@ diabetes_data.head(3)
 # * Age: 나이
 # * Outcome: 클래스 결정 값(0또는 1)
 
-# In[2]:
 
 
 diabetes_data.info( )
@@ -38,7 +36,6 @@ diabetes_data.info( )
 
 # **앞 예제에서 사용된 get_clf_eval()과 precision_recall_curve_plot() 재 로딩**
 
-# In[3]:
 
 
 # 수정된 get_clf_eval() 함수 
@@ -57,7 +54,6 @@ def get_clf_eval(y_test, pred=None, pred_proba=None):
     F1: {3:.4f}, AUC:{4:.4f}'.format(accuracy, precision, recall, f1, roc_auc))
 
 
-# In[4]:
 
 
 def precision_recall_curve_plot(y_test=None, pred_proba_c1=None):
@@ -82,7 +78,6 @@ def precision_recall_curve_plot(y_test=None, pred_proba_c1=None):
 
 # **Logistic Regression으로 학습 및 예측 수행**
 
-# In[5]:
 
 
 # 피처 데이터 세트 X, 레이블 데이터 세트 y를 추출. 
@@ -103,7 +98,6 @@ get_clf_eval(y_test , pred, pred_proba)
 
 # **precision recall 곡선 그림**
 
-# In[8]:
 
 
 pred_proba_c1 = lr_clf.predict_proba(X_test)[:, 1]
@@ -112,7 +106,6 @@ precision_recall_curve_plot(y_test, pred_proba_c1)
 
 # **각 피처들의 값 4분위 분포 확인**
 
-# In[9]:
 
 
 diabetes_data.describe()
@@ -120,7 +113,6 @@ diabetes_data.describe()
 
 # **Glucose 피처의 분포도**
 
-# In[12]:
 
 
 plt.hist(diabetes_data['Glucose'], bins=100)
@@ -129,7 +121,6 @@ plt.show()
 
 # **0값이 있는 피처들에서 0값의 데이터 건수와 퍼센트 계산**
 
-# In[14]:
 
 
 # 0값을 검사할 피처명 리스트 객체 설정
@@ -147,7 +138,6 @@ for feature in zero_features:
 
 # **0값을 평균값으로 대체**
 
-# In[16]:
 
 
 # zero_features 리스트 내부에 저장된 개별 피처들에 대해서 0값을 평균 값으로 대체
@@ -156,7 +146,6 @@ diabetes_data[zero_features] = diabetes_data[zero_features].replace(0, diabetes_
 
 # **StandardScaler 클래스를 이용해 피처 데이터 세트에 일괄적으로 스케일링 적용하고 0값을 평균값으로 대체한 데이터 세트로 학습/예측**
 
-# In[17]:
 
 
 X = diabetes_data.iloc[:, :-1]
@@ -179,7 +168,6 @@ get_clf_eval(y_test , pred, pred_proba)
 
 # **분류결정 임곗값을 변경하면서 성능 측정**
 
-# In[18]:
 
 
 from sklearn.preprocessing import Binarizer
@@ -193,7 +181,6 @@ def get_eval_by_threshold(y_test , pred_proba_c1, thresholds):
         get_clf_eval(y_test , custom_predict, pred_proba_c1)
 
 
-# In[19]:
 
 
 thresholds = [0.3 , 0.33 ,0.36,0.39, 0.42 , 0.45 ,0.48, 0.50]
@@ -201,7 +188,6 @@ pred_proba = lr_clf.predict_proba(X_test)
 get_eval_by_threshold(y_test, pred_proba[:,1].reshape(-1,1), thresholds )
 
 
-# In[20]:
 
 
 # 임곗값를 0.48로 설정한 Binarizer 생성
@@ -213,7 +199,6 @@ pred_th_048 = binarizer.fit_transform(pred_proba[:, 1].reshape(-1,1))
 get_clf_eval(y_test , pred_th_048, pred_proba[:, 1])
 
 
-# In[ ]:
 
 
 
